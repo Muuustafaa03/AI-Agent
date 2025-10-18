@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  php:
+    image: php:8.2-apache
+    container_name: agent_php
+    ports: ["8080:80"]
+    volumes:
+      - ./app:/var/www/html
+      - ./storage:/var/www/storage
+      - ./composer:/tmp/composer
+    depends_on:
+      - mysql
+      - python
+    environment:
+      - APP_ENV=local
+    working_dir: /var/www/html
+    command: bash -lc "docker-php-ext-install mysqli && apache2-foreground"
+
+  mysql:
+    image: mysql:8.0
+    container_name: agent_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports: ["3307:3306"]
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: agent_python
+    ports: ["5001:5001"]
+    volumes:
+      - ./python:/app
+      - ./storage/models:/models
+
+volumes:
+  mysql_data:

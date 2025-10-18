@@ -1,0 +1,10 @@
+/vendor/
+/node_modules/
+/storage/artifacts/
+/storage/models/
+/storage/*.log
+.env
+.DS_Store
+__pycache__/
+*.pyc
+/composer/
