@@ -1,50 +1,80 @@
 <?php
 namespace App\Skills;
 
+use App\Util\Http;
+
 class Tools {
-  public static function fetch_url(string $url): string {
-    $html = @file_get_contents($url);
-    if (!$html) return $url; // fallback: treat as text
+
+  // very small HTML → text helper
+  private static function html_to_text(string $html): string {
+    // remove script/style
+    $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#si', ' ', $html);
+    // strip tags
     $text = strip_tags($html);
-    $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML401, 'UTF-8');
-    return substr($text, 0, 16000); // cap
+    // normalize whitespace
+    $text = preg_replace('/[ \t\x0B\f\r]+/u', ' ', $text);
+    $text = preg_replace('/\n{3,}/', "\n\n", trim($text));
+    return $text;
   }
 
+  public static function fetch_title(string $url): ?string {
+    $res = Http::get($url, ['timeout'=>15, 'retries'=>1]);
+    if (!$res['ok']) return null;
+    if (str_contains(Http::contentType($res['headers']), 'html')) {
+      if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $res['body'], $m)) {
+        return trim(html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+      }
+    }
+    return null;
+  }
+
+  public static function fetch_url(string $url): string {
+    $res = Http::get($url, ['timeout'=>20, 'retries'=>2]);
+    if (!$res['ok']) {
+      throw new \RuntimeException("fetch failed: {$res['error']}");
+    }
+    $ct = Http::contentType($res['headers']);
+    if ($ct === '' || str_contains($ct, 'html')) {
+      return self::html_to_text($res['body']);
+    }
+    if (str_contains($ct, 'text/plain') || str_contains($ct, 'json') || str_contains($ct,'xml')) {
+      return $res['body'];
+    }
+    // unsupported
+    throw new \RuntimeException("unsupported content-type: {$ct}");
+  }
+
+  public static function task_breakdown(string $text): array {
+    // super-light MVP task list (heuristic)
+    $sentences = preg_split('/(?<=[\.\!\?])\s+/', trim($text));
+    $tasks = [];
+    foreach ($sentences as $s) {
+      $s = trim($s);
+      if ($s === '') continue;
+      $tasks[] = $s;
+      if (count($tasks) >= 12) break;
+    }
+    return $tasks;
+  }
+
+  // Summarize MVP — keep your existing implementation if you have one.
+  // We’ll keep a simple heuristic that returns bullet points; Agent will
+  // call the Python worker for token/cost/latency estimation.
   public static function summarize(string $text, string $style='brief'): string {
-    $prompt = "Summarize the following text in a {$style} style with bullet highlights:\n\n" . $text;
-    return self::openai_simple($prompt);
-  }
-
-  public static function task_breakdown(string $text): string {
-    $prompt = "From the text below, produce a JSON array of tasks [{title, description, priority (P1|P2|P3)}]:\n\n" . $text;
-    return self::openai_simple($prompt);
-  }
-
-  private static function openai_simple(string $prompt): string {
-    $apiKey = env('OPENAI_API_KEY', '');
-    if (!$apiKey) return "[OpenAI key missing]";
-
-    $body = [
-      "model" => "gpt-4o-mini",
-      "messages" => [
-        ["role"=>"system","content"=>"You are a concise assistant."],
-        ["role"=>"user","content"=>$prompt]
-      ],
-      "temperature" => 0.3
-    ];
-    $ch = curl_init("https://api.openai.com/v1/chat/completions");
-    curl_setopt_array($ch, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_HTTPHEADER => [
-        "Authorization: Bearer $apiKey",
-        "Content-Type: application/json"
-      ],
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => json_encode($body)
-    ]);
-    $resp = curl_exec($ch);
-    if ($resp === false) return "[OpenAI request failed]";
-    $data = json_decode($resp, true);
-    return $data['choices'][0]['message']['content'] ?? "[No content]";
+    $lines = preg_split('/\r?\n/', trim($text));
+    $bullets = [];
+    foreach ($lines as $ln) {
+      $ln = trim($ln);
+      if ($ln === '') continue;
+      $bullets[] = '- ' . $ln;
+      if (count($bullets) >= 24) break;
+    }
+    if (empty($bullets)) $bullets = ['- (no extractable content)'];
+    if ($style === 'technical') {
+      array_unshift($bullets, '**Technical Summary**');
+    } else {
+      array_unshift($bullets, '**Research Brief**');
+    }
+    return implode("\n", $bullets);
   }
 }

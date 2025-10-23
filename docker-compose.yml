@@ -1,20 +1,17 @@
-version: "3.9"
 services:
   php:
-    image: php:8.2-apache
+    build:
+      context: ./php
+      dockerfile: Dockerfile
     container_name: agent_php
     ports: ["8080:80"]
     volumes:
       - ./app:/var/www/html
       - ./storage:/var/www/storage
-      - ./composer:/tmp/composer
     depends_on:
       - mysql
       - python
-    environment:
-      - APP_ENV=local
     working_dir: /var/www/html
-    command: bash -lc "docker-php-ext-install mysqli && apache2-foreground"
 
   mysql:
     image: mysql:8.0
