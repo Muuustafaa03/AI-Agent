@@ -1,5 +1,3 @@
-
-
 ---
 
 ````markdown
@@ -306,10 +304,7 @@ graph TB
 
 ---
 
-## 📜 License
-
-MIT (or your choice)
+```
 
 ---
-
-````
+```
