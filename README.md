@@ -48,7 +48,7 @@ It records **telemetry** (latency, tokens, cost, model version), stores **artifa
 ```mermaid
 flowchart LR
   A[User] -->|Input: URL/Text| B[PHP Web UI]
-  B -->|createRun()| C[(MySQL)]
+  B -->|createRun| C[(MySQL)]
   B -->|POST /summarize| D[Python Worker]
   D -->|LLM call + usage| D
   D -->|summary/tasks/prd + telemetry| B
@@ -309,12 +309,3 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
-```
-
-**Key changes made:**
-1. ✅ Removed the outer ````markdown wrapper at the beginning
-2. ✅ Removed the closing ```` at the end  
-3. ✅ Now the entire document flows consistently without nested code blocks
-4. ✅ The mermaid diagrams and code examples remain properly formatted within their own code blocks
-
-This should now render perfectly on GitHub! 🚀
