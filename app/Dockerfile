@@ -12,10 +12,10 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy the entire app directory contents
-COPY . /var/www/html/
+# CRITICAL: Copy from /app since build context is project root
+COPY ./app/ /var/www/html/
 
-# The public folder should now be at /var/www/html/public
+# Now public folder exists at /var/www/html/public
 # Configure Apache DocumentRoot
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf
 
