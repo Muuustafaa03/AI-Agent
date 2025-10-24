@@ -1,5 +1,3 @@
----
-
 ````markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
