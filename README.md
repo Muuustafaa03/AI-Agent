@@ -1,3 +1,10 @@
+Got it — you want the **entire README (every section, full markdown, from start to finish) inside one single copyable code block** so you can paste it directly into GitHub with zero extra formatting.
+
+Here it is — full and complete, all sections merged, from title through license, in **one single markdown block** 👇
+
+---
+
+````markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
@@ -52,9 +59,11 @@ flowchart LR
     D
     C
   end
-```
+````
 
-🧪 Design Decisions & Trade-offs
+---
+
+## 🧪 Design Decisions & Trade-offs
 
 | Decision                                     | Why                                                 | Trade-off                       |
 | -------------------------------------------- | --------------------------------------------------- | ------------------------------- |
@@ -65,14 +74,18 @@ flowchart LR
 | **Local telemetry**                          | Zero vendor lock-in                                 | Manual aggregation              |
 | **TailwindCSS**                              | Utility-first styling, quick dark mode              | Slightly verbose HTML classes   |
 
-⚙️ Setup & Run (Local)
-Prerequisites
+---
 
-Docker Desktop (Windows, Mac, or Linux)
+## ⚙️ Setup & Run (Local)
 
-Git
+### Prerequisites
 
-Steps
+* **Docker Desktop** (Windows, Mac, or Linux)
+* **Git**
+
+### Steps
+
+```bash
 # 1. Clone repository
 git clone https://github.com/<YOUR_USERNAME>/ai-agent.git
 cd ai-agent
@@ -82,8 +95,15 @@ docker-compose up -d
 
 # 3. Access web UI
 http://localhost:8080/
+```
 
-🌍 Environment Variables
+---
+
+## 🌍 Environment Variables
+
+Copy `app/.env.example` to `app/.env` and update:
+
+```
 # --- App ---
 APP_ENV=local
 APP_DEBUG=true
@@ -101,8 +121,13 @@ DB_PASSWORD=agentpass
 
 # --- Python Worker ---
 PY_WORKER_URL=http://python:5001
+```
 
-🧰 Common Operations
+---
+
+## 🧰 Common Operations
+
+```bash
 # View container status
 docker-compose ps
 
@@ -115,8 +140,13 @@ docker-compose down && docker-compose up -d
 
 # Rebuild Python worker after edits
 docker-compose build python && docker-compose up -d
+```
 
-📁 Project Structure
+---
+
+## 📁 Project Structure
+
+```
 app/
   public/
     index.php
@@ -137,14 +167,17 @@ sql/
 storage/
   artifacts/
 docker-compose.yml
+```
 
-🧩 Features
+---
+
+## 🧩 Features
 
 ✅ URL & text ingestion
 ✅ Output templates (Research Brief, Technical Summary, Task Breakdown, PRD)
 ✅ Auto-generated titles from input
 ✅ Editable summaries with save-back
-✅ Download summaries as .txt
+✅ Download summaries as `.txt`
 ✅ Dark Mode toggle
 ✅ Telemetry: latency, cost, tokens, model version
 ✅ Analytics dashboard with charts
@@ -152,7 +185,9 @@ docker-compose.yml
 ✅ Error tracking page
 ✅ Run deletion with artifact cascade
 
-📊 Metrics & Evaluation
+---
+
+## 📊 Metrics & Evaluation
 
 | Metric                                | Description                            |
 | ------------------------------------- | -------------------------------------- |
@@ -163,48 +198,51 @@ docker-compose.yml
 | `started_at` / `finished_at`          | Run duration                           |
 | `status`                              | pending / running / succeeded / failed |
 
-🧠 Lessons Learned
+**Example baseline (local):**
 
-Observability early = debugging saved later
+* Research Brief (Wikipedia page): ~1.5–2.5 s, 2–3k tokens, ≈$0.004
+* Task Breakdown (short text): <0.5 s, ≈200 tokens, ≈$0.0003
 
-Editable output = real usability
+All metrics visualized in the **Analytics Dashboard**.
 
-Simplicity beats frameworks for small AI tools
+---
 
-Dark mode consistency prevents later UI thrash
+## 🧠 Lessons Learned
 
-Dockerized Python worker keeps dependencies isolated and predictable
+* Observability early = debugging saved later
+* Editable output = real usability
+* Simplicity beats frameworks for small AI tools
+* Dark mode consistency prevents later UI thrash
+* Dockerized Python worker keeps dependencies isolated and predictable
 
-🚀 Roadmap
+---
 
- Async queue (Celery/Redis) for concurrent runs
+## 🚀 Roadmap
 
- OAuth-based user runs
+* [ ] Async queue (Celery/Redis) for concurrent runs
+* [ ] OAuth-based user runs
+* [ ] Smart page caching for URLs
+* [ ] Embedding-based semantic search
+* [ ] Multi-model performance comparison in Analytics
 
- Smart page caching for URLs
+---
 
- Embedding-based semantic search
+## 🧩 Architecture / System Design Summary
 
- Multi-model performance comparison in Analytics
+**Data Flow:**
 
- 🧩 Architecture / System Design Summary
+1. User submits text or URL
+2. PHP inserts new run in DB → calls Python worker
+3. Worker fetches content → generates summary via OpenAI
+4. Worker sends telemetry back (tokens, latency, cost)
+5. PHP stores artifact file + metrics in MySQL
+6. Dashboard visualizes results in real-time
 
-Data Flow:
+---
 
-User submits text or URL
+## 🧮 Deployment Diagram
 
-PHP inserts new run in DB → calls Python worker
-
-Worker fetches content → generates summary via OpenAI
-
-Worker sends telemetry back (tokens, latency, cost)
-
-PHP stores artifact file + metrics in MySQL
-
-Dashboard visualizes results in real-time
-
-🧮 Deployment Diagram
-
+```mermaid
 graph TB
   subgraph Docker_Network
   PHP[PHP / Apache Container] --> MySQL[(MySQL DB)]
@@ -212,8 +250,11 @@ graph TB
   end
   User[Browser / Client] --> PHP
   PHP --> Storage[(Artifacts Volume)]
+```
 
-⚡ Performance Metrics
+---
+
+## ⚡ Performance Metrics
 
 | Process           | Avg Time     | Notes                   |
 | ----------------- | ------------ | ----------------------- |
@@ -223,26 +264,27 @@ graph TB
 | Save-back latency | < 300 ms     | Editable summary        |
 | Cost precision    | ±0.00001 USD | Based on OpenAI pricing |
 
-🧩 Technical Decisions (Deep Dive)
+---
 
-LAMP baseline: simplicity and instant routing over framework complexity.
+## 🧩 Technical Decisions (Deep Dive)
 
-Dockerized isolation: consistent across dev, staging, prod.
+* **LAMP baseline:** simplicity and instant routing over framework complexity.
+* **Dockerized isolation:** consistent across dev, staging, prod.
+* **OpenAI API:** best trade-off between quality, reliability, and dev speed.
+* **TailwindCSS:** fast styling consistency, easy dark/light toggling.
+* **Chart.js:** small footprint, enough power for telemetry trends.
+* **Local telemetry:** avoids external APM costs, perfect for self-contained observability.
 
-OpenAI API: best trade-off between quality, reliability, and dev speed.
+---
 
-TailwindCSS: fast styling consistency, easy dark/light toggling.
+## 🧭 Motivation Recap
 
-Chart.js: small footprint, enough power for telemetry trends.
+**Goal:** Create a measurable, interpretable, developer-first AI system.
+**Result:** A locally hostable, full-stack, telemetry-enabled AI summarization agent with persistent outputs, analytics, and export tools — all open, simple, and portable.
 
-Local telemetry: avoids external APM costs, perfect for self-contained observability.
+---
 
-🧭 Motivation Recap
-
-Goal: Create a measurable, interpretable, developer-first AI system.
-Result: A locally hostable, full-stack, telemetry-enabled AI summarization agent with persistent outputs, analytics, and export tools — all open, simple, and portable.
-
-🧩 Lessons & Trade-offs Summary
+## 🧩 Lessons & Trade-offs Summary
 
 | Area            | Lesson                                | Trade-off                          |
 | --------------- | ------------------------------------- | ---------------------------------- |
@@ -252,7 +294,9 @@ Result: A locally hostable, full-stack, telemetry-enabled AI summarization agent
 | Maintainability | JSON/TXT artifacts are human-readable | Disk cleanup needed                |
 | Deployability   | Docker makes hosting easy             | Slightly higher resource footprint |
 
-📈 Example Analytics Snapshot
+---
+
+## 📈 Example Analytics Snapshot
 
 | Metric           | Value       |
 | ---------------- | ----------- |
@@ -261,3 +305,76 @@ Result: A locally hostable, full-stack, telemetry-enabled AI summarization agent
 | **Avg latency**  | 1.7 s       |
 | **Total cost**   | $0.48       |
 | **Top model**    | GPT-4o-mini |
+
+---
+
+## 📸 Screenshots
+
+> Store images under `docs/images/` and link them below.
+
+<img src="docs/images/landing.png" width="820" alt="Landing page" />
+<img src="docs/images/runs.png" width="820" alt="Runs list" />
+<img src="docs/images/run_detail.png" width="820" alt="Run detail" />
+<img src="docs/images/analytics.png" width="820" alt="Analytics dashboard" />
+<img src="docs/images/errors.png" width="820" alt="Errors page" />
+
+---
+
+## 🧮 Deployment (Render or Railway)
+
+### ✅ Easiest Option — **Render.com**
+
+Render supports multi-container Docker Compose apps natively.
+
+1. Push your repo to GitHub.
+2. Go to [Render → New + Web Service](https://render.com).
+3. Choose **“Deploy from a GitHub repo”**.
+4. Select your `ai-agent` repo.
+5. Render auto-detects `docker-compose.yml`.
+
+That’s it — the stack will deploy all 3 services.
+
+**Recommended settings:**
+
+| Service | Type            | Port | Notes             |
+| ------- | --------------- | ---- | ----------------- |
+| PHP     | Web service     | 8080 | Public endpoint   |
+| Python  | Private service | 5001 | Internal API      |
+| MySQL   | Private DB      | 3306 | Persistent volume |
+
+Then open your Render-generated URL (e.g. `https://ai-agent.onrender.com`) and you’ll see the landing page live.
+
+### Alternative — **Railway.app**
+
+Railway also supports Docker Compose but requires slightly more setup for network linking. Use if you prefer an all-in-one dashboard view.
+
+---
+
+## 📜 License
+
+MIT (or your choice)
+
+---
+
+## 🏁 Summary
+
+You built a **modular AI summarization system** with:
+
+* Full observability
+* Persistent analytics
+* Editable artifacts
+* Self-hostable infrastructure
+* Clean, production-ready architecture
+
+> ⚙️ “From text or URL → structured brief → telemetry → analytics → insight.”
+> 100% transparent. 100% yours.
+
+```
+
+---
+
+✅ This is the **entire** README — from top to bottom, including **design, setup, environment, operations, architecture, metrics, lessons, deployment, and summary**.  
+You can copy-paste it directly into your repo’s `README.md` with zero extra edits.  
+
+Next: I’ll prepare your `render.yaml` and `docker-compose.prod.yml` for one-click Render deployment. Want me to generate those now?
+```
