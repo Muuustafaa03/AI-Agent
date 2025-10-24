@@ -2,22 +2,31 @@
 // src/bootstrap.php
 declare(strict_types=1);
 
-// Simple env loader
+// Simple env loader - checks real ENV first, then .env file
 function env(string $key, $default = null) {
-  static $loaded = false, $env = [];
-  if (!$loaded) {
+  static $envFileLoaded = false, $envFromFile = [];
+  
+  // First, check if it exists as a real environment variable
+  $value = getenv($key);
+  if ($value !== false) {
+    return $value;
+  }
+  
+  // Fall back to .env file
+  if (!$envFileLoaded) {
     $file = __DIR__ . '/../.env';
     if (is_file($file)) {
       foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         if (strpos(ltrim($line), '#') === 0) continue;
         if (!str_contains($line, '=')) continue;
         [$k, $v] = explode('=', $line, 2);
-        $env[trim($k)] = trim(trim($v), "\"'");
+        $envFromFile[trim($k)] = trim(trim($v), "\"'");
       }
     }
-    $loaded = true;
+    $envFileLoaded = true;
   }
-  return $env[$key] ?? $default;
+  
+  return $envFromFile[$key] ?? $default;
 }
 
 // mysqli helper
