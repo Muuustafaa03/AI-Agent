@@ -69,26 +69,41 @@ function migrate_once(): void {
           ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+    // Helper function to check if column exists
+    $columnExists = function($table, $column) use ($db): bool {
+        $dbName = env('DB_DATABASE', 'railway');
+        $result = $db->query("
+            SELECT COUNT(*) as count 
+            FROM information_schema.COLUMNS 
+            WHERE TABLE_SCHEMA = '$dbName' 
+            AND TABLE_NAME = '$table' 
+            AND COLUMN_NAME = '$column'
+        ");
+        $row = $result->fetch_assoc();
+        return $row['count'] > 0;
+    };
+
     // Columns that might be missing if DB existed before
     $maybeCols = [
         'runs' => [
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS title VARCHAR(255) NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS model_version VARCHAR(64) NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS prompt_tokens INT NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS completion_tokens INT NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS total_tokens INT NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS latency_ms INT NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS est_cost_usd DECIMAL(10,6) NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS started_at DATETIME NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS finished_at DATETIME NULL",
-            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS error_msg TEXT NULL"
+            ['title', "ALTER TABLE runs ADD COLUMN title VARCHAR(255) NULL"],
+            ['model_version', "ALTER TABLE runs ADD COLUMN model_version VARCHAR(64) NULL"],
+            ['prompt_tokens', "ALTER TABLE runs ADD COLUMN prompt_tokens INT NULL"],
+            ['completion_tokens', "ALTER TABLE runs ADD COLUMN completion_tokens INT NULL"],
+            ['total_tokens', "ALTER TABLE runs ADD COLUMN total_tokens INT NULL"],
+            ['latency_ms', "ALTER TABLE runs ADD COLUMN latency_ms INT NULL"],
+            ['est_cost_usd', "ALTER TABLE runs ADD COLUMN est_cost_usd DECIMAL(10,6) NULL"],
+            ['started_at', "ALTER TABLE runs ADD COLUMN started_at DATETIME NULL"],
+            ['finished_at', "ALTER TABLE runs ADD COLUMN finished_at DATETIME NULL"],
+            ['error_msg', "ALTER TABLE runs ADD COLUMN error_msg TEXT NULL"]
         ],
     ];
 
-    foreach ($maybeCols as $table => $stmts) {
-        foreach ($stmts as $sql) {
-            // MySQL 8 doesn't support IF NOT EXISTS for all ALTERs; ignore failures
-            @$db->query($sql);
+    foreach ($maybeCols as $table => $columns) {
+        foreach ($columns as [$columnName, $sql]) {
+            if (!$columnExists($table, $columnName)) {
+                $db->query($sql);
+            }
         }
     }
 }
