@@ -27,6 +27,15 @@ It records **telemetry** (latency, tokens, cost, model version), stores **artifa
 
 ---
 
+## 🔗 Access Links
+
+- **GitHub Repository**: [https://github.com/Muuustafaa03/AI-Agent](https://github.com/Muuustafaa03/AI-Agent)
+- **Live Demo**: [https://ai-agent-web-0up4.onrender.com](https://ai-agent-web-0up4.onrender.com)
+
+> ⚠️ **Note**: The hosted demo version does not include an OpenAI API key. You can interact with the interface and see the workflow, but AI-generated responses will not be meaningful. To experience full functionality, please clone the repository and add your own API key.
+
+---
+
 ## 🧱 Architecture Overview
 
 **Three-service Docker stack:**
