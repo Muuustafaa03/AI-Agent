@@ -17,6 +17,20 @@ function env(string $key, $default = null) {
   return $env[$key] ?? $default;
 }
 
+<?php
+// src/bootstrap.php
+declare(strict_types=1);
+
+require __DIR__.'/Util/env.php';
+require __DIR__.'/Util/db.php';
+
+// AUTO-MIGRATE (creates tables if missing)
+require __DIR__.'/Util/migrate.php';
+migrate_once();
+
+// …the rest of your bootstrap (autoloaders, etc.)
+
+
 // Minimal PSR-4 autoloader for App\*
 spl_autoload_register(function ($class) {
   $prefix = 'App\\';
@@ -26,6 +40,7 @@ spl_autoload_register(function ($class) {
   $file = __DIR__ . '/' . $relPath;                  // maps to app/src/<...>.php
   if (is_file($file)) require $file;
 });
+
 
 // mysqli helper
 function db(): mysqli {

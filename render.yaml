@@ -12,7 +12,6 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        # Render will fill this at runtime; optional to hardcode later
         value: https://ai-agent-web.onrender.com
       - key: DB_HOST
         value: ai-agent-mysql
@@ -23,11 +22,11 @@ services:
       - key: DB_USERNAME
         value: agentuser
       - key: DB_PASSWORD
-        sync: false        # set in dashboard as a secret
+        sync: false
       - key: PY_WORKER_URL
         value: http://ai-agent-worker:5001
       - key: OPENAI_API_KEY
-        sync: false        # set in dashboard as a secret
+        sync: false
     disk:
       name: artifacts
       mountPath: /var/www/storage
@@ -35,7 +34,7 @@ services:
     healthCheckPath: /
 
   # ---------- Python Worker (Flask) ----------
-  - type: privateService
+  - type: web
     name: ai-agent-worker
     env: docker
     plan: free
@@ -44,11 +43,9 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
-    # internal port exposed by Flask
-    exposePort: 5001
 
   # ---------- MySQL (Dockerized) ----------
-  - type: privateService
+  - type: web
     name: ai-agent-mysql
     env: docker
     plan: free
