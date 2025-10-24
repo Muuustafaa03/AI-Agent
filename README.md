@@ -1,9 +1,3 @@
-Got it — you want the **entire README (every section, full markdown, from start to finish) inside one single copyable code block** so you can paste it directly into GitHub with zero extra formatting.
-
-Here it is — full and complete, all sections merged, from title through license, in **one single markdown block** 👇
-
----
-
 ````markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
