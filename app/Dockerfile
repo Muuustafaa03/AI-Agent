@@ -13,10 +13,15 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# Point DocumentRoot to /public
-RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf \
- && sed -i 's#<Directory /var/www/>#<Directory /var/www/html/public/>#' /etc/apache2/apache2.conf \
- && sed -i 's/AllowOverride None/AllowOverride All/i' /etc/apache2/apache2.conf
+# Configure Apache for /public directory
+RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf
+
+# Add Directory configuration with proper permissions
+RUN echo '<Directory /var/www/html/public/>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/sites-available/000-default.conf
 
 # CRITICAL: Render requires dynamic PORT binding
 EXPOSE 80
