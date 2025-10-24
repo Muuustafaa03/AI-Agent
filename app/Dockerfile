@@ -15,6 +15,11 @@ WORKDIR /var/www/html
 # COPY from current directory (context is ./app)
 COPY . /var/www/html/
 
+# Create storage directory structure
+RUN mkdir -p /var/www/storage/artifacts \
+    && chown -R www-data:www-data /var/www/storage \
+    && chmod -R 755 /var/www/storage
+
 # Now public folder exists at /var/www/html/public
 # Configure Apache DocumentRoot
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf
