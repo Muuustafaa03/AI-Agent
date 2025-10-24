@@ -1,3 +1,6 @@
+I see the issue - there are extra markdown code block delimiters (````markdown at the start and ```` at the end) that shouldn't be there. Here's the cleaned up README with proper formatting:
+
+```markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
@@ -61,7 +64,9 @@ flowchart LR
     D
     C
   end
-````
+```
+
+---
 
 ## 🧪 Design Decisions & Trade-offs
 
@@ -87,7 +92,7 @@ flowchart LR
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<YOUR_USERNAME>/ai-agent.git
+git clone https://github.com/Muuustafaa03/AI-Agent.git
 cd ai-agent
 
 # 2. Start containers
@@ -307,3 +312,12 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
+```
+
+**Key changes made:**
+1. ✅ Removed the outer ````markdown wrapper at the beginning
+2. ✅ Removed the closing ```` at the end  
+3. ✅ Now the entire document flows consistently without nested code blocks
+4. ✅ The mermaid diagrams and code examples remain properly formatted within their own code blocks
+
+This should now render perfectly on GitHub! 🚀
