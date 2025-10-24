@@ -1,7 +1,3 @@
-Perfect — you got it 👍
-Below is your **final full README.md** (with deployment + screenshots removed and the features section fixed into clean line-by-line bullets).
-Then, at the end, I’ve included a **short GitHub Markdown formatting guide** explaining every syntax element used.
-
 ---
 
 ````markdown
@@ -307,24 +303,3 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
-
-## 📜 License
-
-MIT (or your choice)
-
----
-
-## 🏁 Summary
-
-You built a **modular AI summarization system** with:
-
-* Full observability
-* Persistent analytics
-* Editable artifacts
-* Self-hostable infrastructure
-* Clean, production-ready architecture
-
-> ⚙️ “From text or URL → structured brief → telemetry → analytics → insight.”
-> 100% transparent. 100% yours.
-
-````
