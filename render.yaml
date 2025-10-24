@@ -4,7 +4,7 @@ services:
     name: ai-agent-web
     env: docker
     plan: free
-    dockerfilePath: ./app/Dockerfile
+    dockerfilePath: ./app/Dockerfile.render  # Changed from ./app/Dockerfile
     autoDeploy: true
     envVars:
       - key: APP_ENV

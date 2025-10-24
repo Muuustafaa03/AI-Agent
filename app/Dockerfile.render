@@ -12,8 +12,8 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Set working directory
 WORKDIR /var/www/html
 
-# COPY from current directory (context is ./app)
-COPY . /var/www/html/
+# CRITICAL: Copy from /app since build context is project root
+COPY ./app/ /var/www/html/
 
 # Now public folder exists at /var/www/html/public
 # Configure Apache DocumentRoot
@@ -30,7 +30,7 @@ RUN echo '<Directory /var/www/html/public/>\n\
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Dynamic PORT for Render (defaults to 80 for local)
+# Dynamic PORT for Render
 EXPOSE 80
 CMD sed -i "s/Listen 80/Listen ${PORT:-80}/" /etc/apache2/ports.conf && \
     sed -i "s/:80>/:${PORT:-80}>/" /etc/apache2/sites-available/000-default.conf && \
