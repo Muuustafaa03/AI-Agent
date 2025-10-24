@@ -1,3 +1,4 @@
+````markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
@@ -45,6 +46,7 @@ It records **telemetry** (latency, tokens, cost, model version), stores **artifa
 | **Python Worker (Flask)** | LLM calls, telemetry, metrics | Python 3.11 |
 | **MySQL** | Persistent DB for runs, artifacts, telemetry | MySQL 8.0 |
 
+```mermaid
 flowchart LR
   A[User] -->|Input: URL/Text| B[PHP Web UI]
   B -->|createRun()| C[(MySQL)]
@@ -60,8 +62,7 @@ flowchart LR
     D
     C
   end
-
----
+````
 
 ## 🧪 Design Decisions & Trade-offs
 
@@ -87,7 +88,7 @@ flowchart LR
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Muuustafaa03/AI-Agent.git
+git clone https://github.com/<YOUR_USERNAME>/ai-agent.git
 cd ai-agent
 
 # 2. Start containers
@@ -307,4 +308,3 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
-```
