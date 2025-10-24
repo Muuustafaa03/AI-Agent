@@ -1,4 +1,3 @@
-```markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
