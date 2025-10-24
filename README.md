@@ -1,3 +1,5 @@
+
+
 ---
 
 ````markdown
@@ -303,3 +305,11 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
+
+## 📜 License
+
+MIT (or your choice)
+
+---
+
+````
