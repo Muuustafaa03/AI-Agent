@@ -14,23 +14,19 @@ services:
       - key: APP_URL
         value: https://ai-agent-web.onrender.com
       - key: DB_HOST
-        value: ai-agent-mysql
+        value: crossover.proxy.rlwy.net
       - key: DB_PORT
-        value: "3306"
+        value: "58825"
       - key: DB_DATABASE
-        value: agentdb
+        value: railway
       - key: DB_USERNAME
-        value: agentuser
+        value: root
       - key: DB_PASSWORD
-        sync: false
+        value: eoxenGaHVDRTTvQNDHIiadZjLlINEOek
       - key: PY_WORKER_URL
         value: http://ai-agent-worker:5001
       - key: OPENAI_API_KEY
         sync: false
-    disk:
-      name: artifacts
-      mountPath: /var/www/storage
-      sizeGB: 1
     healthCheckPath: /
 
   # ---------- Python Worker (Flask) ----------
@@ -43,24 +39,3 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
-
-  # ---------- MySQL (Dockerized) ----------
-  - type: web
-    name: ai-agent-mysql
-    env: docker
-    plan: free
-    dockerfilePath: ./mysql.Dockerfile
-    autoDeploy: true
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        sync: false
-      - key: MYSQL_DATABASE
-        value: agentdb
-      - key: MYSQL_USER
-        value: agentuser
-      - key: MYSQL_PASSWORD
-        sync: false
-    disk:
-      name: mysqldata
-      mountPath: /var/lib/mysql
-      sizeGB: 1
