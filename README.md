@@ -301,8 +301,3 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
-
-```
-
----
-```
