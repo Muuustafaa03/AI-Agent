@@ -1,0 +1,69 @@
+services:
+  # ---------- PHP Web (Apache) ----------
+  - type: web
+    name: ai-agent-web
+    env: docker
+    plan: free
+    dockerfilePath: ./app/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        # Render will fill this at runtime; optional to hardcode later
+        value: https://ai-agent-web.onrender.com
+      - key: DB_HOST
+        value: ai-agent-mysql
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: agentdb
+      - key: DB_USERNAME
+        value: agentuser
+      - key: DB_PASSWORD
+        sync: false        # set in dashboard as a secret
+      - key: PY_WORKER_URL
+        value: http://ai-agent-worker:5001
+      - key: OPENAI_API_KEY
+        sync: false        # set in dashboard as a secret
+    disk:
+      name: artifacts
+      mountPath: /var/www/storage
+      sizeGB: 1
+    healthCheckPath: /
+
+  # ---------- Python Worker (Flask) ----------
+  - type: privateService
+    name: ai-agent-worker
+    env: docker
+    plan: free
+    dockerfilePath: ./python/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+    # internal port exposed by Flask
+    exposePort: 5001
+
+  # ---------- MySQL (Dockerized) ----------
+  - type: privateService
+    name: ai-agent-mysql
+    env: docker
+    plan: free
+    dockerfilePath: ./mysql.Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false
+      - key: MYSQL_DATABASE
+        value: agentdb
+      - key: MYSQL_USER
+        value: agentuser
+      - key: MYSQL_PASSWORD
+        sync: false
+    disk:
+      name: mysqldata
+      mountPath: /var/lib/mysql
+      sizeGB: 1
