@@ -1,4 +1,6 @@
-````markdown
+I see the issue - there are extra markdown code block delimiters (````markdown at the start and ```` at the end) that shouldn't be there. Here's the cleaned up README with proper formatting:
+
+```markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
@@ -62,7 +64,7 @@ flowchart LR
     D
     C
   end
-````
+```
 
 ---
 
@@ -90,7 +92,7 @@ flowchart LR
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<YOUR_USERNAME>/ai-agent.git
+git clone https://github.com/Muuustafaa03/AI-Agent.git
 cd ai-agent
 
 # 2. Start containers
@@ -310,3 +312,4 @@ graph TB
 | **Top model**    | GPT-4o-mini |
 
 ---
+```
