@@ -45,7 +45,6 @@ It records **telemetry** (latency, tokens, cost, model version), stores **artifa
 | **Python Worker (Flask)** | LLM calls, telemetry, metrics | Python 3.11 |
 | **MySQL** | Persistent DB for runs, artifacts, telemetry | MySQL 8.0 |
 
-```mermaid
 flowchart LR
   A[User] -->|Input: URL/Text| B[PHP Web UI]
   B -->|createRun()| C[(MySQL)]
@@ -61,7 +60,6 @@ flowchart LR
     D
     C
   end
-```
 
 ---
 
