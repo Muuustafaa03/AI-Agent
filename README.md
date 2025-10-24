@@ -1,6 +1,3 @@
-I see the issue - there are extra markdown code block delimiters (````markdown at the start and ```` at the end) that shouldn't be there. Here's the cleaned up README with proper formatting:
-
-```markdown
 # AI Agent 🤖 — Research & Action (LAMP + Python)
 
 A full-stack, Dockerized **AI research assistant** that ingests URLs or raw text and generates:
